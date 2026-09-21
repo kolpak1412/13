@@ -1,0 +1,41 @@
+name: Сборка APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Найти папку проекта
+        id: proj
+        run: |
+          f=$(find . -name settings.gradle.kts -not -path './.git/*' | awk '{ print length($0) " " $0 }' | sort -n | head -n 1 | cut -d' ' -f2-)
+          if [ -z "$f" ]; then
+            echo "Файл settings.gradle.kts не найден. Структура репозитория:"
+            find . -maxdepth 3 -not -path './.git/*' | head -100
+            exit 1
+          fi
+          dir=$(dirname "$f")
+          echo "Проект найден в папке: $dir"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+
+      - name: Сборка debug APK
+        working-directory: ${{ steps.proj.outputs.dir }}
+        run: gradle assembleDebug --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NotifyAod-debug-apk
+          path: ${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/*.apk
