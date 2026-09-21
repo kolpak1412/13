@@ -1,0 +1,16 @@
+<resources>
+    <!-- На Android 12+ система показывает своё "стартовое окно" (splash screen) при
+         холодном запуске Activity из фона — именно это чаще всего выглядит как серая/белая
+         вспышка на секунду при показе экрана уведомлений. Принудительно делаем это окно
+         чёрным и без иконки, чтобы вспышки не было видно. -->
+    <style name="Theme.NotifyAod.Aod" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowSplashScreenBackground">@android:color/black</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/black</item>
+        <item name="android:windowSplashScreenAnimationDuration">0</item>
+    </style>
+</resources>
